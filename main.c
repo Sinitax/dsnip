@@ -148,6 +148,9 @@ capture(void)
 			break;
 		}
 	}
+
+	XDrawRectangle(display, win, gc,
+		rx, ry, rw, rh);
 }
 
 int
