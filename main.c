@@ -118,7 +118,7 @@ capture(void)
 				ev.xkey.state & ShiftMask ? 1 : 0);
 			if (keysym == XK_Escape) {
 				deinit();
-				exit(0);
+				exit(1);
 			}
 			break;
 		case MotionNotify:
