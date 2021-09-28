@@ -34,37 +34,6 @@ die(const char *fmt, ...)
 	exit(1);
 }
 
-int
-handleopt(char flag, const char *arg)
-{
-	switch (flag) {
-	case 'h':
-		die("USAGE: dsnip [-h] [-f filename]\n");
-	case 'f':
-		if (arg) filename = arg;
-		return 1;
-	default:
-		die("Bad flag: -%c\n", flag);
-	}
-
-	die("Bad argument: -%c %s\n", flag, arg);
-	return 0;
-}
-
-void
-parseargs(int argc, const char **argv)
-{
-	int i;
-
-	filename = "out.png";
-	for (i = 1; i < argc; i++) {
-		if (argv[i][0] == '-' && !argv[i][2])
-			i += handleopt(argv[i][1], argv[i+1]);
-		else
-			die("Bad argument: %s\n", argv[i]);
-	}
-}
-
 void
 update(int x1, int y1, int x2, int y2)
 {
@@ -184,7 +153,10 @@ capture(void)
 int
 main(int argc, const char **argv)
 {
-	parseargs(argc, argv);
+	if (argc != 2)
+		die("USAGE: dsnip OUTFILE\n");
+
+	filename = argv[1];
 
 	init();
 
