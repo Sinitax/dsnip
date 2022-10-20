@@ -4,6 +4,8 @@
 #include <X11/keysym.h>
 #include <X11/cursorfont.h>
 
+#include <unistd.h>
+#include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -12,24 +14,15 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) >= (b) ? (a) : (b))
 
-const char *filename;
-XWindowAttributes scr;
-Display *display;
-Window root, win;
-int rx, ry, rw, rh;
-GC gc;
+static const char usage[] = "dsnip [-h] [-d DELAY] OUTFILE";
 
-void
-die(const char *fmt, ...)
-{
-	va_list ap;
+static const char *filename;
 
-	va_start(ap, fmt);
-	vfprintf(stderr, fmt, ap);
-	va_end(ap);
-
-	exit(1);
-}
+static XWindowAttributes scr;
+static Display *display;
+static Window root, win;
+static int rx, ry, rw, rh;
+static GC gc;
 
 void
 update(int x1, int y1, int x2, int y2)
@@ -151,12 +144,35 @@ capture(void)
 }
 
 int
-main(int argc, const char **argv)
+main(int argc, char **argv)
 {
-	if (argc != 2)
-		die("USAGE: dsnip OUTFILE\n");
+	char **arg, *end;
+	int delay;
 
-	filename = argv[1];
+	delay = 0;
+	filename = NULL;
+	for (arg = &argv[1]; *arg; arg++) {
+		if (!strcmp(*arg, "-d")) {
+			delay = strtol(*(++arg), &end, 10);
+			if (end && *end || delay <= 0)
+				errx(1, "Invalid delay");
+		} else if (!strcmp(*arg, "-h")) {
+			printf("Usage: %s\n", usage);
+			return 0;
+		} else if (!filename) {
+			filename = *arg;
+		} else {
+			fprintf(stderr, "Usage: %s\n", usage);
+			return 1;
+		}
+	}
+
+	if (!filename) {
+		fprintf(stderr, "USAGE: %s\n", usage);
+		return 1;
+	}
+
+	if (delay) sleep(delay);
 
 	init();
 
