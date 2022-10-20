@@ -1,20 +1,19 @@
-CFLAGS =
 LDLIBS = -lX11 -lImlib2
 
-BINDIR ?= /usr/bin
+PREFIX ?= /usr/local
+BINDIR ?= /bin
 
 all: dsnip
 
 clean:
-	rm overdraw
+	rm -f dsnip
 
-dsnip: main.c
-	$(CC) -o $@ $^ $(CFLAGS) $(LDLIBS)
+dsnip: dsnip.c
 
 install: dsnip
-	install -m 755 dsnip $(DESTDIR)$(PREFIX)$(BINDIR)
+	install -m 755 dsnip -T "$(DESTDIR)$(PREFIX)$(BINDIR)"
 
 uninstall:
-	rm $(DESTDIR)$(PREFIX)$(DINDIR)/dsnip
+	rm -f "$(DESTDIR)$(PREFIX)$(BINDIR)/dsnip"
 
-.PHONY: all clean
+.PHONY: all clean install uninstall
