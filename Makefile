@@ -11,7 +11,7 @@ clean:
 dsnip: dsnip.c
 
 install: dsnip
-	install -m 755 dsnip -T "$(DESTDIR)$(PREFIX)$(BINDIR)"
+	install -m 755 dsnip -t "$(DESTDIR)$(PREFIX)$(BINDIR)"
 
 uninstall:
 	rm -f "$(DESTDIR)$(PREFIX)$(BINDIR)/dsnip"
