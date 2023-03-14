@@ -1,14 +1,12 @@
-LDLIBS = -lX11 -lImlib2
-
 PREFIX ?= /usr/local
 BINDIR ?= /bin
+
+LDLIBS = -lX11 -lImlib2
 
 all: dsnip
 
 clean:
 	rm -f dsnip
-
-dsnip: dsnip.c
 
 install: dsnip
 	install -m 755 dsnip -t "$(DESTDIR)$(PREFIX)$(BINDIR)"
